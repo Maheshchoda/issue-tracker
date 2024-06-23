@@ -1,14 +1,10 @@
 'use client';
-
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
 import { Button, Callout, TextField } from '@radix-ui/themes';
-import 'easymde/dist/easymde.min.css';
-import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
-const SimpleMDE = dynamic(() => import('react-simplemde-editor'), { ssr: false });
+import { Controller, useForm } from 'react-hook-form';
+import SimpleMDEWrapper from './SimpleMEDWrapper';
 
 interface IssueForm {
   title: string;
@@ -22,7 +18,10 @@ const NewIssuePage = () => {
 
   const createIssue = async (inputFields: IssueForm) => {
     try {
-      await axios.post('/api/issues', inputFields);
+      const response = await axios.post('/api/issues', inputFields);
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error('Request failed');
+      }
       router.push('/issues');
     } catch (error) {
       setError('An unexpected error occurred.');
@@ -32,7 +31,7 @@ const NewIssuePage = () => {
   return (
     <div className="max-w-xl">
       {error && (
-        <Callout.Root color="red" className='mb-5'>
+        <Callout.Root color="red" className="mb-5">
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
@@ -41,7 +40,7 @@ const NewIssuePage = () => {
         <Controller
           name="description"
           control={control}
-          render={({ field }) => <SimpleMDE placeholder="Description" {...field} />}
+          render={({ field }) => <SimpleMDEWrapper {...field} placeholder="Description" />}
         />
 
         <Button type="submit">Submit New Issue</Button>
