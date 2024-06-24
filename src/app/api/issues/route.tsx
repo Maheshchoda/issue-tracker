@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/app/lib/client';
+import { createIssueSchema } from '@/app/validationSchemas';
 
 interface IssueParams {
   params: { id: number };
 }
-const createIssueSchema = z.object({
-  title: z.string().min(1, 'Title is Required.').max(255),
-  description: z.string().min(1, 'Description is Required.'),
-});
 
 type CreateIssueType = z.infer<typeof createIssueSchema>;
 
