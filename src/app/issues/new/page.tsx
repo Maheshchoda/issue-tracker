@@ -9,29 +9,33 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import SimpleMDEWrapper from './SimpleMEDWrapper';
+import Spinner from '@/app/components/Spinner';
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
 const NewIssuePage = () => {
   const router = useRouter();
   const [error, setError] = useState('');
+  const [isSubmitting, setSubmitting] = useState(false);
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isLoading },
   } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema),
   });
 
   const createIssue = async (inputFields: IssueForm) => {
     try {
+      setSubmitting(true);
       const response = await axios.post('/api/issues', inputFields);
       if (response.status !== 200 && response.status !== 201) {
         throw new Error('Request failed');
       }
       router.push('/issues');
     } catch (error) {
+      setSubmitting(false);
       setError('An unexpected error occurred.');
     }
   };
@@ -52,7 +56,7 @@ const NewIssuePage = () => {
           render={({ field }) => <SimpleMDEWrapper {...field} placeholder="Description" />}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        <Button type="submit">Submit New Issue</Button>
+        <Button disabled={isSubmitting} type="submit">Submit New Issue {isSubmitting && <Spinner />}</Button>
       </form>
     </div>
   );
