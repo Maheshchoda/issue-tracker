@@ -1,6 +1,6 @@
-import React, { forwardRef } from 'react';
-import dynamic from 'next/dynamic';
 import 'easymde/dist/easymde.min.css';
+import React, { forwardRef } from 'react';
+import SimpleMdeReact from 'react-simplemde-editor';
 
 // Define the type for the SimpleMDE editor instance
 type SimpleMDEEditor = {
@@ -15,15 +15,9 @@ interface SimpleMDEProps {
   placeholder?: string;
 }
 
-// Dynamic import of SimpleMDE component with a fallback
-const SimpleMDE = dynamic(() => import('react-simplemde-editor'), {
-  ssr: false,
-  loading: () => <div>Loading editor...</div>, // Add a loading indicator
-});
-
 const SimpleMDEWrapper = forwardRef<SimpleMDEEditor, SimpleMDEProps>((props, ref) => {
   return (
-    <SimpleMDE
+    <SimpleMdeReact
       {...props}
       getMdeInstance={(editor: SimpleMDEEditor) => {
         if (ref) {
