@@ -26,7 +26,7 @@ const NewIssuePage = () => {
     resolver: zodResolver(createIssueSchema),
   });
 
-  const createIssue = async (inputFields: IssueForm) => {
+  const onSubmit = handleSubmit(async (inputFields: IssueForm) => {
     try {
       setSubmitting(true);
       const response = await axios.post('/api/issues', inputFields);
@@ -38,7 +38,7 @@ const NewIssuePage = () => {
       setSubmitting(false);
       setError('An unexpected error occurred.');
     }
-  };
+  });
 
   return (
     <div className="max-w-xl">
@@ -47,7 +47,7 @@ const NewIssuePage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form className="space-y-3 " onSubmit={handleSubmit((data) => createIssue(data))}>
+      <form className="space-y-3 " onSubmit={onSubmit}>
         <TextField.Root {...register('title')} placeholder="Title" />
         <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <Controller
@@ -56,7 +56,9 @@ const NewIssuePage = () => {
           render={({ field }) => <SimpleMDEWrapper {...field} placeholder="Description" />}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        <Button disabled={isSubmitting} type="submit">Submit New Issue {isSubmitting && <Spinner />}</Button>
+        <Button disabled={isSubmitting} type="submit">
+          Submit New Issue {isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );
