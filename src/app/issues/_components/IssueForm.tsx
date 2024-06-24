@@ -30,10 +30,15 @@ const IssueForm = ({ issue }: Props) => {
     resolver: zodResolver(issueSchema),
   });
 
-  const onSubmit = handleSubmit(async (inputFields: IssueFormType) => {
+  const onSubmit = handleSubmit(async (formInputData: IssueFormType) => {
     try {
       setSubmitting(true);
-      const response = await axios.post('/api/issues', inputFields);
+      let response;
+      if (issue) {
+        response = await axios.patch(`/api/issues/${issue.id}`, formInputData);
+      } else {
+        response = await axios.post('/api/issues', formInputData);
+      }
       if (response.status !== 200 && response.status !== 201) {
         throw new Error('Request failed');
       }
@@ -62,7 +67,7 @@ const IssueForm = ({ issue }: Props) => {
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
         <Button disabled={isSubmitting} type="submit">
-          Submit New Issue {isSubmitting && <Spinner />}
+          {issue ? 'Update Issue' : 'Submit New Issue'} {isSubmitting && <Spinner />}
         </Button>
       </form>
     </div>
