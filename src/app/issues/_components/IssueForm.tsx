@@ -2,10 +2,10 @@
 import { ErrorMessage, Spinner } from '@/app/components';
 import { issueSchema } from '@/app/validationSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Callout, TextField } from '@radix-ui/themes';
+import { Button, Callout, Flex, TextField } from '@radix-ui/themes';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import SimpleMDEWrapper from './SimpleMEDWrapper';
@@ -42,13 +42,18 @@ const IssueForm = ({ issue }: Props) => {
       if (response.status !== 200 && response.status !== 201) {
         throw new Error('Request failed');
       }
-      router.push('/issues');
+      router.push('/issues/list');
       router.refresh();
     } catch (error) {
       setSubmitting(false);
       setError('An unexpected error occurred.');
     }
   });
+
+  const onCancel = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    router.push('/issues/list');
+  };
 
   return (
     <div className="max-w-xl">
@@ -67,9 +72,14 @@ const IssueForm = ({ issue }: Props) => {
           render={({ field }) => <SimpleMDEWrapper {...field} placeholder="Description" />}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        <Button disabled={isSubmitting} type="submit">
-          {issue ? 'Update Issue' : 'Submit New Issue'} {isSubmitting && <Spinner />}
-        </Button>
+        <Flex gap="4">
+          <Button disabled={isSubmitting} type="submit">
+            {issue ? 'Update Issue' : 'Submit New Issue'} {isSubmitting && <Spinner />}
+          </Button>
+          <Button color="red" onClick={onCancel}>
+            Cancel
+          </Button>
+        </Flex>
       </form>
     </div>
   );
