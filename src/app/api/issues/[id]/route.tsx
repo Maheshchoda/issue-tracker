@@ -1,7 +1,6 @@
 import prisma from '@/app/lib/client';
-import { notFound } from 'next/navigation';
-import { NextRequest, NextResponse } from 'next/server';
 import { issueSchema, IssueSchemaType } from '@/app/validationSchemas';
+import { NextRequest, NextResponse } from 'next/server';
 
 interface Props {
   params: { id: string };
