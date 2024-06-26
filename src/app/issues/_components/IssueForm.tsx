@@ -73,10 +73,10 @@ const IssueForm = ({ issue }: Props) => {
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
         <Flex gap="4">
-          <Button disabled={isSubmitting} type="submit">
+          <Button className='hover:cursor-pointer' disabled={isSubmitting} type="submit">
             {issue ? 'Update Issue' : 'Submit New Issue'} {isSubmitting && <Spinner />}
           </Button>
-          <Button color="red" onClick={onCancel}>
+          <Button className='hover:cursor-pointer' color="red" onClick={onCancel}>
             Cancel
           </Button>
         </Flex>
