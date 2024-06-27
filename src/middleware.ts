@@ -1,7 +1,7 @@
 import { auth } from '@/app/auth';
 
 export default auth((req) => {
-  console.log(!!req.auth);
+  // console.log(!!req.auth);
 });
 
 export const config = {

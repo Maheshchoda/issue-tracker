@@ -1,9 +1,10 @@
+import { auth } from '@/app/auth';
 import prisma from '@/app/lib/client';
 import { Box, Flex, Grid } from '@radix-ui/themes';
 import { notFound } from 'next/navigation';
+import DeleteIssueButton from './DeleteIssueButton';
 import EditIssueButton from './EditIssueButton';
 import IssueDetails from './IssueDetails';
-import DeleteIssueButton from './DeleteIssueButton';
 
 interface Props {
   params: { id: string };
@@ -18,6 +19,8 @@ const getIssue = async (id: string) => {
 };
 
 const IssueDetailPage = async ({ params: { id } }: Props) => {
+  const session = await auth();
+  console.log(session, 'From the Edit page');
   const issue = await getIssue(id);
   if (!issue) notFound();
 
@@ -26,12 +29,14 @@ const IssueDetailPage = async ({ params: { id } }: Props) => {
       <Box className="md:col-span-4">
         <IssueDetails issue={issue} />
       </Box>
-      <Box className="col-span-1">
-        <Flex direction="column" gap="4">
-          <EditIssueButton issueId={issue.id} />
-          <DeleteIssueButton issueId={issue.id} />
-        </Flex>
-      </Box>
+      {session && (
+        <Box className="col-span-1">
+          <Flex direction="column" gap="4">
+            <EditIssueButton issueId={issue.id} />
+            <DeleteIssueButton issueId={issue.id} />
+          </Flex>
+        </Box>
+      )}
     </Grid>
   );
 };

@@ -1,3 +1,4 @@
+import { auth } from '@/app/auth';
 import prisma from '@/app/lib/client';
 import { issueSchema, IssueSchemaType } from '@/app/validationSchemas';
 import { NextRequest, NextResponse } from 'next/server';
@@ -15,6 +16,8 @@ const getIssue = async (issueId: string) => {
 };
 
 export async function PATCH(request: NextRequest, { params: { id: issueId } }: Props) {
+  const session = await auth();
+  if (!session) return NextResponse.json({}, { status: 401 });
   const body: IssueSchemaType = await request.json();
   const validation = issueSchema.safeParse(body);
   if (!validation.success) return NextResponse.json(validation.error.format(), { status: 400 });
@@ -37,6 +40,8 @@ export async function PATCH(request: NextRequest, { params: { id: issueId } }: P
 }
 
 export async function DELETE(request: NextRequest, { params: { id: issueId } }: Props) {
+  const session = await auth();
+  if (!session) return NextResponse.json({}, { status: 401 });
   const issue = await getIssue(issueId);
 
   if (!issue) return NextResponse.json({ error: 'Invalid Issue' }, { status: 404 });
@@ -47,7 +52,7 @@ export async function DELETE(request: NextRequest, { params: { id: issueId } }: 
         id: issue.id,
       },
     });
-    return NextResponse.json({ });
+    return NextResponse.json({});
   } catch (e) {
     return NextResponse.json({ error: 'Un expected error occured' });
   }
