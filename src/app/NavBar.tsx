@@ -41,7 +41,6 @@ const NavBar = () => {
           </Flex>
           <Box>
             {status === 'authenticated' && (
-              // <Link href="/api/auth/signout">Logout</Link>
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
                   <Avatar
@@ -50,6 +49,7 @@ const NavBar = () => {
                     fallback="?"
                     size="2"
                     radius="full"
+                    referrerPolicy='no-referrer'
                   />
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content>
