@@ -4,7 +4,7 @@ import { Select } from '@radix-ui/themes';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-const AsigneeSelect = () => {
+const AssigneeSelect = () => {
   const [users, setUsers] = useState<User[]>([]);
   useEffect(() => {
     const fetchUsers = async () => {
@@ -30,4 +30,4 @@ const AsigneeSelect = () => {
   );
 };
 
-export default AsigneeSelect;
+export default AssigneeSelect;

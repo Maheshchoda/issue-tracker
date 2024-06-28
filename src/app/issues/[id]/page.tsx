@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import DeleteIssueButton from './DeleteIssueButton';
 import EditIssueButton from './EditIssueButton';
 import IssueDetails from './IssueDetails';
-import AsigneeSelect from './AsigneeSelect';
+import AssigneeSelect from './AssigneeSelect';
 
 interface Props {
   params: { id: string };
@@ -22,7 +22,7 @@ const getIssue = async (id: string) => {
 const IssueDetailPage = async ({ params: { id } }: Props) => {
   const session = await auth();
   const issue = await getIssue(id);
-  
+
   if (!issue) notFound();
 
   return (
@@ -33,7 +33,7 @@ const IssueDetailPage = async ({ params: { id } }: Props) => {
       {session && (
         <Box className="col-span-1">
           <Flex direction="column" gap="4">
-            <AsigneeSelect />
+            <AssigneeSelect />
             <EditIssueButton issueId={issue.id} />
             <DeleteIssueButton issueId={issue.id} />
           </Flex>
