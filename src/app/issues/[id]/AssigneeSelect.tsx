@@ -6,24 +6,24 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 
-const AssigneeSelect = ({ issue }: { issue: Issue }) => {
-  const { id: issueId, assignedToUserId } = issue;
-  const {
-    data: users,
-    error,
-    isLoading,
-  } = useQuery<User[]>({
+const useUsers = () => {
+  return useQuery<User[]>({
     queryKey: ['users'],
     queryFn: () => axios.get<User[]>('/api/users').then((res) => res.data),
     staleTime: 60 * 1000, //60s
     retry: 3,
   });
+};
+
+const AssigneeSelect = ({ issue }: { issue: Issue }) => {
+  const { id: issueId, assignedToUserId } = issue;
+  const { data: users, error, isLoading } = useUsers();
 
   if (isLoading) return <Skeleton />;
 
   if (error) return null;
 
-  const AssignUserId = (userId: string) => {
+  const AssignUser = (userId: string) => {
     const updateUserId = userId === '_unassigned' ? null : userId;
     axios
       .patch('/api/issues/' + issueId, { assignedToUserId: updateUserId })
@@ -32,7 +32,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
 
   return (
     <>
-      <Select.Root defaultValue={assignedToUserId || '_unassigned'} onValueChange={AssignUserId}>
+      <Select.Root defaultValue={assignedToUserId || '_unassigned'} onValueChange={AssignUser}>
         <Select.Trigger placeholder="Assign..." />
         <Select.Content>
           <Select.Group>
