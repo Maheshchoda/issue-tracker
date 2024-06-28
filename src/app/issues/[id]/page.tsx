@@ -20,8 +20,8 @@ const getIssue = async (id: string) => {
 
 const IssueDetailPage = async ({ params: { id } }: Props) => {
   const session = await auth();
-  console.log(session, 'From the Edit page');
   const issue = await getIssue(id);
+  
   if (!issue) notFound();
 
   return (
