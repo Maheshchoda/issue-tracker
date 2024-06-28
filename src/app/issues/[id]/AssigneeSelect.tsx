@@ -27,6 +27,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
     const updateUserId = userId === '_unassigned' ? null : userId;
     axios
       .patch('/api/issues/' + issueId, { assignedToUserId: updateUserId })
+      .then(() => toast.success('Success.'))
       .catch(() => toast.error('Changes could not be saved.'));
   };
 
