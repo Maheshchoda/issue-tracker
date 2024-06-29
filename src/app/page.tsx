@@ -1,4 +1,4 @@
-import { Flex } from '@radix-ui/themes';
+import { Flex, Grid } from '@radix-ui/themes';
 import IssueSummary from './IssueSummary';
 import LatestIssues from './LatestIssues';
 import { Status } from '@prisma/client';
@@ -19,12 +19,12 @@ export default async function Home() {
     CLOSED: await getCount(Status.CLOSED),
   };
   return (
-    <Flex justify="between" align="start">
+    <Grid columns={{initial: "1", md: "2"}} gap="5">
       <Flex direction="column" gap="5">
         <IssueSummary statusCount={statusCount} />
         <IssueChart statusCount={statusCount} />
       </Flex>
       <LatestIssues />
-    </Flex>
+    </Grid>
   );
 }
