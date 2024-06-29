@@ -19,6 +19,7 @@ const IssueFilter = () => {
     const params = new URLSearchParams();
     if (status && status !== 'all_statuses') params.append('status', status);
     if (searchParams.get('orderBy')) params.append('orderBy', searchParams.get('orderBy')!);
+    if (searchParams.get('order')) params.append('order', searchParams.get('order')!);
 
     const query = params.size ? `?${params.toString()}` : '';
 

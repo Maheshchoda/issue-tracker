@@ -4,10 +4,10 @@ import prisma from '../../lib/client';
 import IssueToolbar from './IssueToolbar';
 import NextLink from 'next/link';
 import { Issue, Status } from '@prisma/client';
-import { ArrowUpIcon } from '@radix-ui/react-icons';
+import { ArrowDownIcon, ArrowUpIcon } from '@radix-ui/react-icons';
 
 interface Props {
-  searchParams: { status: Status; orderBy: keyof Issue };
+  searchParams: { status: Status; orderBy: keyof Issue; order: 'asc' | 'desc' };
 }
 
 const IssuesPage = async ({ searchParams }: Props) => {
@@ -18,8 +18,10 @@ const IssuesPage = async ({ searchParams }: Props) => {
   ];
   const statuses = Object.values(Status);
   const status = statuses.includes(searchParams.status) ? searchParams.status : undefined;
+  const order =
+    searchParams.order === 'asc' || searchParams.order === 'desc' ? searchParams.order : 'asc';
   const orderBy = sortBy.map((item) => item.value).includes(searchParams.orderBy)
-    ? { [searchParams.orderBy]: 'asc' }
+    ? { [searchParams.orderBy]: order }
     : undefined;
   const issues = await prisma.issue.findMany({
     where: {
@@ -27,6 +29,8 @@ const IssuesPage = async ({ searchParams }: Props) => {
     },
     orderBy,
   });
+
+  const getNextOrder = (currentOrder: 'asc' | 'desc') => (currentOrder === 'asc' ? 'desc' : 'asc');
 
   return (
     <>
@@ -36,9 +40,22 @@ const IssuesPage = async ({ searchParams }: Props) => {
           <Table.Row>
             {sortBy.map((sortItem) => (
               <Table.ColumnHeaderCell key={sortItem.value} className={sortItem.className}>
-                <NextLink href={{ query: { ...searchParams, orderBy: sortItem.value } }}>
+                <NextLink
+                  href={{
+                    query: {
+                      ...searchParams,
+                      orderBy: sortItem.value,
+                      order: getNextOrder(searchParams.order),
+                    },
+                  }}
+                >
                   {sortItem.label}
-                  {sortItem.value === searchParams.orderBy && <ArrowUpIcon className="inline" />}
+                  {sortItem.value === searchParams.orderBy &&
+                    (searchParams.order === 'asc' ? (
+                      <ArrowUpIcon className="inline" />
+                    ) : (
+                      <ArrowDownIcon className="inline" />
+                    ))}
                 </NextLink>
               </Table.ColumnHeaderCell>
             ))}
