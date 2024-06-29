@@ -1,25 +1,17 @@
 import { Status } from '@prisma/client';
 import { Card, Flex, Text } from '@radix-ui/themes';
-import prisma from './lib/client';
 import Link from 'next/link';
+import { StatusCountType } from './page';
 
-export default async function IssueSummary() {
-  const getCount = async (status: Status): Promise<number> => {
-    return await prisma.issue.count({ where: { status } });
-  };
-  const statusCount = {
-    open: await getCount(Status.OPEN),
-    inProgress: await getCount(Status.IN_PROGRESS),
-    closed: await getCount(Status.CLOSED),
-  };
+export default async function IssueSummary({ statusCount }: { statusCount: StatusCountType }) {
   const statuses: {
     label: string;
     value: number;
     status: Status;
   }[] = [
-    { label: 'Open Issues', value: statusCount.open, status: Status.OPEN },
-    { label: 'In-progress Issues', value: statusCount.inProgress, status: Status.IN_PROGRESS },
-    { label: 'Closed Issues', value: statusCount.closed, status: Status.CLOSED },
+    { label: 'Open Issues', value: statusCount.OPEN, status: Status.OPEN },
+    { label: 'In-progress Issues', value: statusCount.IN_PROGRESS, status: Status.IN_PROGRESS },
+    { label: 'Closed Issues', value: statusCount.CLOSED, status: Status.CLOSED },
   ];
   return (
     <Flex gap="4">
