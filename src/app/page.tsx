@@ -3,6 +3,7 @@ import IssueSummary from './IssueSummary';
 import LatestIssues from './LatestIssues';
 import { Status } from '@prisma/client';
 import prisma from './lib/client';
+import IssueChart from './IssueChart';
 
 export type StatusCountType = {
   [key in Status]: number;
@@ -18,8 +19,11 @@ export default async function Home() {
     CLOSED: await getCount(Status.CLOSED),
   };
   return (
-    <Flex  justify="between" align="start">
-      <IssueSummary statusCount={statusCount} />
+    <Flex justify="between" align="start">
+      <Flex direction="column" gap="5">
+        <IssueSummary statusCount={statusCount} />
+        <IssueChart statusCount={statusCount} />
+      </Flex>
       <LatestIssues />
     </Flex>
   );
