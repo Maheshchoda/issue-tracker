@@ -6,6 +6,7 @@ import DeleteIssueButton from './DeleteIssueButton';
 import EditIssueButton from './EditIssueButton';
 import IssueDetails from './IssueDetails';
 import AssigneeSelect from './AssigneeSelect';
+import { Metadata } from 'next';
 
 interface Props {
   params: { id: string };
@@ -33,7 +34,7 @@ const IssueDetailPage = async ({ params: { id } }: Props) => {
       {session && (
         <Box className="col-span-1">
           <Flex direction="column" gap="4">
-            <AssigneeSelect issue={issue}/>
+            <AssigneeSelect issue={issue} />
             <EditIssueButton issueId={issue.id} />
             <DeleteIssueButton issueId={issue.id} />
           </Flex>
@@ -42,5 +43,18 @@ const IssueDetailPage = async ({ params: { id } }: Props) => {
     </Grid>
   );
 };
+
+export async function generateMetadata({ params }: Props) {
+  const issue = await prisma.issue.findUnique({
+    where: {
+      id: parseInt(params.id),
+    },
+  });
+
+  return {
+    title: issue?.title,
+    description: issue?.description,
+  };
+}
 
 export default IssueDetailPage;

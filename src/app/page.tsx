@@ -4,6 +4,7 @@ import LatestIssues from './LatestIssues';
 import { Status } from '@prisma/client';
 import prisma from './lib/client';
 import IssueChart from './IssueChart';
+import { Metadata } from 'next';
 
 export type StatusCountType = {
   [key in Status]: number;
@@ -19,7 +20,7 @@ export default async function Home() {
     CLOSED: await getCount(Status.CLOSED),
   };
   return (
-    <Grid columns={{initial: "1", md: "2"}} gap="5">
+    <Grid columns={{ initial: '1', md: '2' }} gap="5">
       <Flex direction="column" gap="5">
         <IssueSummary statusCount={statusCount} />
         <IssueChart statusCount={statusCount} />
@@ -28,3 +29,8 @@ export default async function Home() {
     </Grid>
   );
 }
+
+export const metadata: Metadata = {
+  title: 'Issue Tracker - Dashboard',
+  description: 'Comprehensive overview and real-time status updates of all tracked issues.',
+};
