@@ -2,24 +2,23 @@ import { auth } from '@/app/auth';
 import prisma from '@/app/lib/client';
 import { Box, Flex, Grid } from '@radix-ui/themes';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
+import AssigneeSelect from './AssigneeSelect';
 import DeleteIssueButton from './DeleteIssueButton';
 import EditIssueButton from './EditIssueButton';
 import IssueDetails from './IssueDetails';
-import AssigneeSelect from './AssigneeSelect';
-import { Metadata } from 'next';
 
 interface Props {
   params: { id: string };
 }
 
-const getIssue = async (id: string) => {
-  return await prisma.issue.findUnique({
+const getIssue = cache((id: string) =>
+  prisma.issue.findUnique({
     where: {
       id: parseInt(id),
     },
-  });
-};
-
+  }),
+);
 const IssueDetailPage = async ({ params: { id } }: Props) => {
   const session = await auth();
   const issue = await getIssue(id);
@@ -45,11 +44,7 @@ const IssueDetailPage = async ({ params: { id } }: Props) => {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const issue = await prisma.issue.findUnique({
-    where: {
-      id: parseInt(params.id),
-    },
-  });
+  const issue = await getIssue(params.id);
 
   return {
     title: issue?.title,
